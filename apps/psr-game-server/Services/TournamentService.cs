@@ -98,6 +98,14 @@ public class TournamentService : ITournamentService
         }
     }
 
+    public bool PlayerExists(int playerId)
+    {
+        lock (_lock)
+        {
+            return _tournament.Players.Any(p => p.Id == playerId);
+        }
+    }
+
     public bool StartTournament()
     {
         lock (_lock)

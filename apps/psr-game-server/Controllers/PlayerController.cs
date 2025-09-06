@@ -40,6 +40,11 @@ public class PlayerController : ControllerBase
     [HttpGet("{playerId}/status")]
     public ActionResult<TournamentStatusResponse> GetStatus(int playerId)
     {
+        if (!_tournamentService.PlayerExists(playerId))
+        {
+            return NotFound(new { message = "Player not found" });
+        }
+
         var status = _tournamentService.GetTournamentStatus(playerId);
         return Ok(status);
     }
@@ -78,6 +83,11 @@ public class PlayerController : ControllerBase
     [HttpGet("{playerId}/results")]
     public ActionResult<List<PlayerRoundResult>> GetPlayerResults(int playerId)
     {
+        if (!_tournamentService.PlayerExists(playerId))
+        {
+            return NotFound(new { message = "Player not found" });
+        }
+
         var results = _tournamentService.GetPlayerResults(playerId);
         return Ok(results);
     }

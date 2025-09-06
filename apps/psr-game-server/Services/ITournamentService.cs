@@ -7,6 +7,7 @@ public interface ITournamentService
     // Player registration
     RegisterPlayerResponse RegisterPlayer(string playerName);
     bool UnregisterPlayer(int playerId);
+    bool PlayerExists(int playerId);
     
     // Tournament management
     Tournament GetTournament();
