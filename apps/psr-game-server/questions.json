@@ -1,0 +1,187 @@
+{
+  "questions": [
+    {
+      "id": "q1",
+      "question": "What is 2+2?",
+      "answer": "4",
+      "type": "Text",
+      "description": "Basic arithmetic question",
+      "tags": ["math", "arithmetic", "easy"],
+      "difficultyLevel": 1
+    },
+    {
+      "id": "q2",
+      "question": "What is the capital of Australia?",
+      "answer": "Canberra",
+      "type": "Text",
+      "description": "Geography question about Australian capital",
+      "tags": ["geography", "australia", "capital"],
+      "difficultyLevel": 2
+    },
+    {
+      "id": "q3",
+      "question": "What is the largest planet in our solar system?",
+      "answer": "Jupiter",
+      "type": "Text",
+      "description": "Astronomy question about planets",
+      "tags": ["astronomy", "planets", "science"],
+      "difficultyLevel": 2
+    },
+    {
+      "id": "q4",
+      "question": "What year did World War II end?",
+      "answer": "1945",
+      "type": "Text",
+      "description": "Historical question about WWII",
+      "tags": ["history", "wwii", "dates"],
+      "difficultyLevel": 3
+    },
+    {
+      "id": "q5",
+      "question": "What is the chemical symbol for gold?",
+      "answer": "Au",
+      "type": "Text",
+      "description": "Chemistry question about chemical symbols",
+      "tags": ["chemistry", "symbols", "elements"],
+      "difficultyLevel": 3
+    },
+    {
+      "id": "q6",
+      "question": "How many continents are there?",
+      "answer": "7",
+      "type": "Text",
+      "description": "Geography question about continents",
+      "tags": ["geography", "continents", "basic"],
+      "difficultyLevel": 1
+    },
+    {
+      "id": "q7",
+      "question": "What is the smallest prime number?",
+      "answer": "2",
+      "type": "Text",
+      "description": "Mathematics question about prime numbers",
+      "tags": ["math", "prime", "numbers"],
+      "difficultyLevel": 2
+    },
+    {
+      "id": "q8",
+      "question": "What is the currency of Japan?",
+      "answer": "Yen",
+      "type": "Text",
+      "description": "Geography/economics question about Japanese currency",
+      "tags": ["geography", "currency", "japan"],
+      "difficultyLevel": 2
+    },
+    {
+      "id": "q9",
+      "question": "What is 10 squared?",
+      "answer": "100",
+      "type": "Text",
+      "description": "Mathematics question about exponents",
+      "tags": ["math", "exponents", "basic"],
+      "difficultyLevel": 1
+    },
+    {
+      "id": "q10",
+      "question": "What is the longest river in the world?",
+      "answer": "Nile",
+      "type": "Text",
+      "description": "Geography question about rivers",
+      "tags": ["geography", "rivers", "records"],
+      "difficultyLevel": 3
+    },
+    {
+      "id": "q11",
+      "question": "Listen to this audio clip and identify the animal sound",
+      "answer": "Dog",
+      "type": "Audio",
+      "mediaUrl": "/sounds/dog-bark.mp3",
+      "description": "Audio identification question",
+      "tags": ["audio", "animals", "sounds"],
+      "difficultyLevel": 2
+    },
+    {
+      "id": "q12",
+      "question": "What programming language logo is shown in this image?",
+      "answer": "Python",
+      "type": "Image",
+      "mediaUrl": "/images/python-logo.png",
+      "description": "Visual identification of programming language logo",
+      "tags": ["programming", "logos", "visual"],
+      "difficultyLevel": 3
+    },
+    {
+      "id": "q13",
+      "question": "Watch this video clip and count how many people are in the scene",
+      "answer": "3",
+      "type": "Video",
+      "mediaUrl": "/videos/counting-people.mp4",
+      "description": "Video analysis and counting question",
+      "tags": ["video", "counting", "observation"],
+      "difficultyLevel": 4
+    },
+    {
+      "id": "q14",
+      "question": "What is the freezing point of water in Celsius?",
+      "answer": "0",
+      "type": "Text",
+      "description": "Science question about water properties",
+      "tags": ["science", "temperature", "water"],
+      "difficultyLevel": 1
+    },
+    {
+      "id": "q15",
+      "question": "What programming language is this server written in?",
+      "answer": "C#",
+      "type": "Text",
+      "description": "Technical question about the current application",
+      "tags": ["programming", "csharp", "technical"],
+      "difficultyLevel": 2
+    },
+    {
+      "id": "q16",
+      "question": "What does HTTP stand for?",
+      "answer": "HyperText Transfer Protocol",
+      "type": "Text",
+      "description": "Computer science acronym question",
+      "tags": ["computer-science", "acronyms", "web"],
+      "difficultyLevel": 3
+    },
+    {
+      "id": "q17",
+      "question": "What is the speed of light in vacuum (in m/s)?",
+      "answer": "299792458",
+      "type": "Text",
+      "description": "Physics constant question",
+      "tags": ["physics", "constants", "light"],
+      "difficultyLevel": 4
+    },
+    {
+      "id": "q18",
+      "question": "What is the largest ocean on Earth?",
+      "answer": "Pacific",
+      "type": "Text",
+      "description": "Geography question about oceans",
+      "tags": ["geography", "oceans", "records"],
+      "difficultyLevel": 2
+    },
+    {
+      "id": "q19",
+      "question": "How many sides does a hexagon have?",
+      "answer": "6",
+      "type": "Text",
+      "description": "Geometry question about polygon sides",
+      "tags": ["geometry", "shapes", "basic"],
+      "difficultyLevel": 1
+    },
+    {
+      "id": "q20",
+      "question": "What is the square root of 64?",
+      "answer": "8",
+      "type": "Text",
+      "description": "Mathematics question about square roots",
+      "tags": ["math", "square-root", "basic"],
+      "difficultyLevel": 2
+    }
+  ]
+}

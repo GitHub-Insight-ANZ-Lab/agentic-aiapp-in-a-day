@@ -95,6 +95,37 @@
                     </div>
                 </div>
 
+                <!-- Configuration & History Management -->
+                <div class="row mt-4">
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5><i class="fas fa-question-circle"></i> Questions Configuration</h5>
+                            </div>
+                            <div class="card-body">
+                                <p class="card-text">View and configure questions for the tournament. Supports text, audio, image, and video questions.</p>
+                                <a href="@Url.Action("Questions", "Admin")" class="btn btn-primary">
+                                    <i class="fas fa-cog"></i> Manage Questions
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5><i class="fas fa-history"></i> Tournament History</h5>
+                            </div>
+                            <div class="card-body">
+                                <p class="card-text">View past tournament results, player performance, and detailed round information.</p>
+                                <a href="@Url.Action("History", "Admin")" class="btn btn-success">
+                                    <i class="fas fa-chart-line"></i> View History
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Players Section -->
                 <div class="row mt-4" id="playersSection">
                     <div class="col-12">

@@ -7,12 +7,16 @@ namespace PsrGameServer.Controllers;
 public class AdminController : Controller
 {
     private readonly ITournamentService _tournamentService;
+    private readonly IQuestionService _questionService;
+    private readonly ITournamentHistoryService _historyService;
     private const string AdminPasscode = "9999";
     private const string AdminSessionKey = "AdminAuthenticated";
 
-    public AdminController(ITournamentService tournamentService)
+    public AdminController(ITournamentService tournamentService, IQuestionService questionService, ITournamentHistoryService historyService)
     {
         _tournamentService = tournamentService;
+        _questionService = questionService;
+        _historyService = historyService;
     }
 
     public IActionResult Login()
@@ -118,6 +122,100 @@ public class AdminController : Controller
     {
         HttpContext.Session.Remove(AdminSessionKey);
         return RedirectToAction("Login");
+    }
+
+    // Questions management
+    public async Task<IActionResult> Questions()
+    {
+        if (!IsAuthenticated())
+        {
+            return RedirectToAction("Login");
+        }
+
+        var questions = await _questionService.GetAllQuestionsAsync();
+        return View(questions);
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> UpdateQuestions(string questionsJson)
+    {
+        if (!IsAuthenticated())
+        {
+            return RedirectToAction("Login");
+        }
+
+        var success = await _questionService.UpdateQuestionsFromJsonAsync(questionsJson);
+        if (success)
+        {
+            TempData["Success"] = "Questions updated successfully.";
+        }
+        else
+        {
+            TempData["Error"] = "Failed to update questions. Please check the JSON format.";
+        }
+
+        return RedirectToAction("Questions");
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> GetQuestionsJson()
+    {
+        if (!IsAuthenticated())
+        {
+            return Unauthorized();
+        }
+
+        var json = await _questionService.GetQuestionsAsJsonAsync();
+        return Json(json);
+    }
+
+    // Tournament history management
+    public async Task<IActionResult> History()
+    {
+        if (!IsAuthenticated())
+        {
+            return RedirectToAction("Login");
+        }
+
+        var tournaments = await _historyService.GetAllTournamentsAsync();
+        return View(tournaments);
+    }
+
+    public async Task<IActionResult> HistoryDetails(int id)
+    {
+        if (!IsAuthenticated())
+        {
+            return RedirectToAction("Login");
+        }
+
+        var tournament = await _historyService.GetTournamentByIdAsync(id);
+        if (tournament == null)
+        {
+            return NotFound();
+        }
+
+        return View(tournament);
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> DeleteTournament(int id)
+    {
+        if (!IsAuthenticated())
+        {
+            return RedirectToAction("Login");
+        }
+
+        var success = await _historyService.DeleteTournamentAsync(id);
+        if (success)
+        {
+            TempData["Success"] = "Tournament deleted successfully.";
+        }
+        else
+        {
+            TempData["Error"] = "Failed to delete tournament.";
+        }
+
+        return RedirectToAction("History");
     }
 
     private bool IsAuthenticated()

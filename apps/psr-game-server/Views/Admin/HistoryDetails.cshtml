@@ -1,0 +1,174 @@
+@model PsrGameServer.Models.TournamentHistory
+@{
+    ViewData["Title"] = $"Tournament {Model.Id} Details";
+}
+
+<div class="row">
+    <div class="col-12">
+        <div class="card border-info">
+            <div class="card-header bg-info text-white">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h3 class="mb-0">
+                        <i class="fas fa-trophy"></i> Tournament @Model.Id Details
+                    </h3>
+                    <a href="@Url.Action("History", "Admin")" class="btn btn-outline-light btn-sm">
+                        <i class="fas fa-arrow-left"></i> Back to History
+                    </a>
+                </div>
+            </div>
+            <div class="card-body">
+                <!-- Tournament Summary -->
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <h4>Tournament Information</h4>
+                        <table class="table table-borderless">
+                            <tr>
+                                <td><strong>ID:</strong></td>
+                                <td>@Model.Id</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Started:</strong></td>
+                                <td>@Model.StartedAt.ToString("yyyy-MM-dd HH:mm:ss")</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Ended:</strong></td>
+                                <td>@(Model.EndedAt?.ToString("yyyy-MM-dd HH:mm:ss") ?? "N/A")</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Status:</strong></td>
+                                <td>
+                                    <span class="badge badge-@(Model.Status == PsrGameServer.Models.TournamentStatus.Completed ? "success" : 
+                                                              Model.Status == PsrGameServer.Models.TournamentStatus.InProgress ? "warning" : "secondary")">
+                                        @Model.Status
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Total Players:</strong></td>
+                                <td>@Model.TotalPlayers</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Total Rounds:</strong></td>
+                                <td>@Model.TotalRounds</td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="col-md-6">
+                        @if (!string.IsNullOrEmpty(Model.WinnerName))
+                        {
+                            <h4>Winner</h4>
+                            <div class="alert alert-success">
+                                <i class="fas fa-crown"></i> <strong>@Model.WinnerName</strong> with @Model.WinnerScore points!
+                            </div>
+                        }
+                    </div>
+                </div>
+
+                <!-- Players -->
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <h4>Players</h4>
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Player ID</th>
+                                        <th>Name</th>
+                                        <th>Total Score</th>
+                                        <th>Registered At</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var player in Model.Players.OrderByDescending(p => p.TotalScore))
+                                    {
+                                        <tr class="@(player.Name == Model.WinnerName ? "table-success" : "")">
+                                            <td>@player.PlayerId</td>
+                                            <td>
+                                                @player.Name
+                                                @if (player.Name == Model.WinnerName)
+                                                {
+                                                    <i class="fas fa-crown text-warning"></i>
+                                                }
+                                            </td>
+                                            <td>@player.TotalScore</td>
+                                            <td>@player.RegisteredAt.ToString("yyyy-MM-dd HH:mm")</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Rounds -->
+                <div class="row">
+                    <div class="col-12">
+                        <h4>Rounds</h4>
+                        @foreach (var round in Model.Rounds.OrderBy(r => r.RoundNumber))
+                        {
+                            <div class="card mb-3">
+                                <div class="card-header">
+                                    <h5 class="mb-0">Round @round.RoundNumber</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row mb-3">
+                                        <div class="col-md-8">
+                                            <p><strong>Question:</strong> @round.Question</p>
+                                            <p><strong>Correct Answer:</strong> @round.CorrectAnswer</p>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <p><strong>Server Move:</strong> @round.ServerMove</p>
+                                            <p><strong>Started:</strong> @(round.StartedAt?.ToString("HH:mm:ss") ?? "N/A")</p>
+                                            <p><strong>Ended:</strong> @(round.EndedAt?.ToString("HH:mm:ss") ?? "N/A")</p>
+                                        </div>
+                                    </div>
+
+                                    @if (round.PlayerResults.Any())
+                                    {
+                                        <h6>Player Results</h6>
+                                        <div class="table-responsive">
+                                            <table class="table table-sm">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Player ID</th>
+                                                        <th>Answer</th>
+                                                        <th>Move</th>
+                                                        <th>Correct</th>
+                                                        <th>Score</th>
+                                                        <th>Submitted At</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @foreach (var result in round.PlayerResults.OrderByDescending(r => r.Score))
+                                                    {
+                                                        <tr>
+                                                            <td>@result.PlayerId</td>
+                                                            <td>@(result.Answer ?? "N/A")</td>
+                                                            <td>@(result.Move?.ToString() ?? "N/A")</td>
+                                                            <td>
+                                                                @if (result.AnswerCorrect)
+                                                                {
+                                                                    <i class="fas fa-check text-success"></i>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <i class="fas fa-times text-danger"></i>
+                                                                }
+                                                            </td>
+                                                            <td>@result.Score</td>
+                                                            <td>@(result.SubmittedAt?.ToString("HH:mm:ss") ?? "N/A")</td>
+                                                        </tr>
+                                                    }
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

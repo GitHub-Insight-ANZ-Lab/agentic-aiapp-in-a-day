@@ -1,6 +1,35 @@
 namespace PsrGameServer.Models;
 
-public record QuestionAnswer(string Question, string Answer);
+public enum QuestionType
+{
+    Text,
+    Audio,
+    Image,
+    Video
+}
+
+public class QuestionAnswer
+{
+    public string Id { get; set; } = string.Empty;
+    public string Question { get; set; } = string.Empty;
+    public string Answer { get; set; } = string.Empty;
+    public QuestionType Type { get; set; } = QuestionType.Text;
+    public string? MediaUrl { get; set; }
+    public string? Description { get; set; }
+    public List<string> Tags { get; set; } = new();
+    public int DifficultyLevel { get; set; } = 1; // 1-5 scale
+    
+    public QuestionAnswer() { }
+    
+    public QuestionAnswer(string question, string answer, QuestionType type = QuestionType.Text, string? mediaUrl = null)
+    {
+        Id = Guid.NewGuid().ToString();
+        Question = question;
+        Answer = answer;
+        Type = type;
+        MediaUrl = mediaUrl;
+    }
+}
 
 public enum TournamentStatus
 {
@@ -119,4 +148,57 @@ public class RoundResultEntry
     public Move ServerMove { get; set; }
     public bool WonRound { get; set; }
     public int Score { get; set; }
+}
+
+// Database models for tournament history
+public class TournamentHistory
+{
+    public int Id { get; set; }
+    public DateTime StartedAt { get; set; }
+    public DateTime? EndedAt { get; set; }
+    public TournamentStatus Status { get; set; }
+    public int TotalPlayers { get; set; }
+    public int TotalRounds { get; set; }
+    public string? WinnerName { get; set; }
+    public int? WinnerScore { get; set; }
+    public List<PlayerHistory> Players { get; set; } = new();
+    public List<RoundHistory> Rounds { get; set; } = new();
+}
+
+public class PlayerHistory
+{
+    public int Id { get; set; }
+    public int TournamentHistoryId { get; set; }
+    public int PlayerId { get; set; }
+    public string Name { get; set; } = string.Empty;
+    public int TotalScore { get; set; }
+    public DateTime RegisteredAt { get; set; }
+    public TournamentHistory Tournament { get; set; } = null!;
+}
+
+public class RoundHistory
+{
+    public int Id { get; set; }
+    public int TournamentHistoryId { get; set; }
+    public int RoundNumber { get; set; }
+    public string Question { get; set; } = string.Empty;
+    public string CorrectAnswer { get; set; } = string.Empty;
+    public Move ServerMove { get; set; }
+    public DateTime? StartedAt { get; set; }
+    public DateTime? EndedAt { get; set; }
+    public TournamentHistory Tournament { get; set; } = null!;
+    public List<PlayerRoundHistory> PlayerResults { get; set; } = new();
+}
+
+public class PlayerRoundHistory
+{
+    public int Id { get; set; }
+    public int RoundHistoryId { get; set; }
+    public int PlayerId { get; set; }
+    public string? Answer { get; set; }
+    public Move? Move { get; set; }
+    public bool AnswerCorrect { get; set; }
+    public int Score { get; set; }
+    public DateTime? SubmittedAt { get; set; }
+    public RoundHistory Round { get; set; } = null!;
 }

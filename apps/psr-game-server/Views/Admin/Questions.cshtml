@@ -1,0 +1,130 @@
+@model List<PsrGameServer.Models.QuestionAnswer>
+@{
+    ViewData["Title"] = "Questions Management";
+}
+
+<div class="row">
+    <div class="col-12">
+        <div class="card border-primary">
+            <div class="card-header bg-primary text-white">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h3 class="mb-0">
+                        <i class="fas fa-question-circle"></i> Questions Management
+                    </h3>
+                    <a href="@Url.Action("Index", "Admin")" class="btn btn-outline-light btn-sm">
+                        <i class="fas fa-arrow-left"></i> Back to Admin Panel
+                    </a>
+                </div>
+            </div>
+            <div class="card-body">
+                @if (TempData["Success"] != null)
+                {
+                    <div class="alert alert-success">
+                        <i class="fas fa-check-circle"></i> @TempData["Success"]
+                    </div>
+                }
+                @if (TempData["Error"] != null)
+                {
+                    <div class="alert alert-danger">
+                        <i class="fas fa-exclamation-triangle"></i> @TempData["Error"]
+                    </div>
+                }
+
+                <!-- Current Questions -->
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <h4>Current Questions (@Model.Count)</h4>
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Question</th>
+                                        <th>Answer</th>
+                                        <th>Type</th>
+                                        <th>Difficulty</th>
+                                        <th>Tags</th>
+                                        <th>Media URL</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var question in Model)
+                                    {
+                                        <tr>
+                                            <td>@question.Id</td>
+                                            <td>@question.Question</td>
+                                            <td>@question.Answer</td>
+                                            <td>
+                                                <span class="badge badge-@(question.Type == PsrGameServer.Models.QuestionType.Text ? "secondary" : 
+                                                                          question.Type == PsrGameServer.Models.QuestionType.Audio ? "warning" :
+                                                                          question.Type == PsrGameServer.Models.QuestionType.Image ? "info" : "success")">
+                                                    @question.Type
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <span class="badge badge-@(question.DifficultyLevel <= 2 ? "success" : 
+                                                                          question.DifficultyLevel <= 3 ? "warning" : "danger")">
+                                                    Level @question.DifficultyLevel
+                                                </span>
+                                            </td>
+                                            <td>
+                                                @if (question.Tags?.Any() == true)
+                                                {
+                                                    @string.Join(", ", question.Tags)
+                                                }
+                                            </td>
+                                            <td>
+                                                @if (!string.IsNullOrEmpty(question.MediaUrl))
+                                                {
+                                                    <a href="@question.MediaUrl" target="_blank" class="btn btn-sm btn-outline-primary">
+                                                        <i class="fas fa-external-link-alt"></i>
+                                                    </a>
+                                                }
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- JSON Editor -->
+                <div class="row">
+                    <div class="col-12">
+                        <h4>Update Questions (JSON Format)</h4>
+                        <form method="post" asp-action="UpdateQuestions">
+                            <div class="form-group">
+                                <label for="questionsJson">Questions JSON:</label>
+                                <textarea id="questionsJson" name="questionsJson" class="form-control" rows="15" placeholder="Paste your questions JSON here..."></textarea>
+                                <small class="form-text text-muted">
+                                    Expected format: {"questions": [{"id": "q1", "question": "What is...?", "answer": "...", "type": "Text", "difficultyLevel": 1, "tags": []}]}
+                                </small>
+                            </div>
+                            <div class="form-group">
+                                <button type="button" class="btn btn-info mr-2" onclick="loadCurrentQuestions()">
+                                    <i class="fas fa-download"></i> Load Current Questions
+                                </button>
+                                <button type="submit" class="btn btn-primary" onclick="return confirm('Are you sure you want to update all questions?')">
+                                    <i class="fas fa-save"></i> Update Questions
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    async function loadCurrentQuestions() {
+        try {
+            const response = await fetch('@Url.Action("GetQuestionsJson", "Admin")');
+            const jsonString = await response.json();
+            document.getElementById('questionsJson').value = jsonString;
+        } catch (error) {
+            alert('Error loading current questions: ' + error.message);
+        }
+    }
+</script>

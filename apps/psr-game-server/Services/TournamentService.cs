@@ -8,32 +8,17 @@ public class TournamentService : ITournamentService
     private readonly Tournament _tournament = new();
     private readonly object _lock = new();
     private int _nextPlayerId = 1;
-    
-    private readonly List<QuestionAnswer> _questionBank = new()
-    {
-        new("What is 2+2?", "4"),
-        new("What is the capital of Australia?", "Canberra"),
-        new("What is the largest planet in our solar system?", "Jupiter"),
-        new("What year did World War II end?", "1945"),
-        new("What is the chemical symbol for gold?", "Au"),
-        new("How many continents are there?", "7"),
-        new("What is the smallest prime number?", "2"),
-        new("What is the currency of Japan?", "Yen"),
-        new("What is 10 squared?", "100"),
-        new("What is the longest river in the world?", "Nile"),
-        new("What is the freezing point of water in Celsius?", "0"),
-        new("What programming language is this server written in?", "C#"),
-        new("What does HTTP stand for?", "HyperText Transfer Protocol"),
-        new("What is the speed of light in vacuum (in km/s)?", "299792458"),
-        new("What is the largest ocean on Earth?", "Pacific"),
-        new("How many sides does a hexagon have?", "6"),
-        new("What is the square root of 64?", "8"),
-        new("What is the capital of France?", "Paris"),
-        new("What gas do plants absorb from the atmosphere?", "Carbon Dioxide"),
-        new("What is 15% of 200?", "30")
-    };
-
     private readonly Random _random = new();
+    private readonly IQuestionService _questionService;
+    private readonly IServiceProvider _serviceProvider;
+    private readonly ILogger<TournamentService> _logger;
+
+    public TournamentService(IQuestionService questionService, IServiceProvider serviceProvider, ILogger<TournamentService> logger)
+    {
+        _questionService = questionService;
+        _serviceProvider = serviceProvider;
+        _logger = logger;
+    }
 
     public Tournament GetTournament()
     {
@@ -128,6 +113,23 @@ public class TournamentService : ITournamentService
 
             _tournament.Status = TournamentStatus.Completed;
             _tournament.EndedAt = DateTime.UtcNow;
+            
+            // Save tournament to history asynchronously
+            _ = Task.Run(async () =>
+            {
+                try
+                {
+                    using var scope = _serviceProvider.CreateScope();
+                    var historyService = scope.ServiceProvider.GetRequiredService<ITournamentHistoryService>();
+                    await historyService.SaveTournamentAsync(_tournament);
+                    _logger.LogInformation("Tournament saved to history successfully");
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "Failed to save tournament to history");
+                }
+            });
+            
             return true;
         }
     }
@@ -170,7 +172,7 @@ public class TournamentService : ITournamentService
             QuestionAnswer qa;
             if (string.IsNullOrWhiteSpace(question) || string.IsNullOrWhiteSpace(correctAnswer))
             {
-                qa = _questionBank[_random.Next(_questionBank.Count)];
+                qa = _questionService.GetRandomQuestionAsync().GetAwaiter().GetResult();
             }
             else
             {
